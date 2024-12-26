@@ -1,6 +1,8 @@
 import { Box } from "@mui/material";
 import SideBar from "./components/sidebar";
-import { Outlet } from "react-router";
+import { Outlet, redirect } from "react-router";
+import { verifyTokenRequest } from "../../services/requests";
+import { getAuthToken } from "../../services/token";
 
 export default function Panel() { 
   return (
@@ -17,4 +19,12 @@ export default function Panel() {
       <Outlet />
     </Box>
   )
+}
+
+export function panelLoader() {
+  try {
+    verifyTokenRequest(getAuthToken())
+  } catch {
+    return redirect('/auth/login')
+  }
 }

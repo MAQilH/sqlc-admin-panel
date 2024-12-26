@@ -1,16 +1,34 @@
 import './App.css'
-import { createBrowserRouter, RouterProvider } from 'react-router'
-import Auth, { loginAction } from './pages/auth'
-import Panel from './pages/panel'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
+import Panel, { panelLoader } from './pages/panel'
 import TableDashboard from './pages/panel/components/tableDashboard'
 import {tableDashboardLoader} from './pages/panel/components/tableDashboard'
+import { SnackbarProvider } from 'notistack'
+import LoginForm, { loginAction } from './pages/auth/components/LoginForm'
+import RegisterForm, { registerAction } from './pages/auth/components/RegisterForm'
+import Auth from './pages/auth'
 
 
 const router = createBrowserRouter([
   {
-    path: '/login',
+    path: '/',
+    element: <Navigate to="/panel" replace />
+  },
+  {
+    path: '/auth',
     element: <Auth />,
-    action: loginAction
+    children: [
+      {
+        path: 'login',
+        element: <LoginForm />,
+        action: loginAction 
+      }, 
+      {
+        path: 'register',
+        element: <RegisterForm />,
+        action: registerAction
+      }
+    ]
   }, 
   {
     path: '/panel',
@@ -21,14 +39,17 @@ const router = createBrowserRouter([
         element: <TableDashboard />,
         loader: tableDashboardLoader
       }
-    ]
+    ],
+    loader: panelLoader
   }
 ])
 
 
 function App() {
   return (
-    <RouterProvider router={router}/>  
+    <SnackbarProvider maxSnack={4}>
+      <RouterProvider router={router}/>  
+    </SnackbarProvider>
   )
 }
 

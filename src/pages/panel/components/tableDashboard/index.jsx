@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
 import TableDashboardHeader from "./components/tableDashboardHeader";
-import DocumentList from "./components/documentList";
-import DocumentEditDialog from "./components/documentEditDialog";
-import NewDocumentDialog from "./components/newDocumentDialog";
+import DocumentList from "./components/DocumentList";
+import NewDocumentDialog from "./components/NewDocumentDialog";
 import { redirect } from "react-router";
-import { getTableInfo } from "../../../../services/requests";
+import { getTableInfoRequest } from "../../../../services/requests";
 import { tableAction } from "../../../../store/table/slice";
 import store from "../../../../store";
+import EditDocumentDialog from "./components/EditDocumentList";
 
 export default function TableDashboard() { 
   return (
@@ -21,7 +21,7 @@ export default function TableDashboard() {
     >
       <TableDashboardHeader />
       <DocumentList />
-      <DocumentEditDialog />
+      <EditDocumentDialog />
       <NewDocumentDialog />
     </Box>
   )
@@ -30,7 +30,7 @@ export default function TableDashboard() {
 export async function tableDashboardLoader({ params }) {
   const {tableName} = params
   try{
-    const tableInfo = await getTableInfo(tableName)
+    const tableInfo = await getTableInfoRequest(tableName)
     store.dispatch(tableAction.setCurrentTableInfo(tableInfo))
     return null
   } catch(error) {

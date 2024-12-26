@@ -1,5 +1,5 @@
 import { Grid2 } from "@mui/material";
-import DocumentItem from "../documentItem";
+import DocumentItem from "./DocumentItem";
 import { useSelector } from "react-redux";
 
 

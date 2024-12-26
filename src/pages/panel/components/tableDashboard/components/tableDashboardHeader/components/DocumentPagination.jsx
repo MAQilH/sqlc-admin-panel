@@ -1,41 +1,38 @@
 import { TablePagination } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router";
-import { getTableDocuments } from "../../../../../../../services/requests";
+import { useParams, useSearchParams } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
-import { tableAction } from "../../../../../../../store/table/slice";
+import { fetchTableDocuments } from "../../../../../../../store/table/action";
 
 export default function DocumentPagination() {
-  const location = useLocation()
-  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch()
   const { tableName } = useParams()
   const tableSize = useSelector(state => state.table.currentTableInfo.tableSize) || 0
   
-  const [page, setPage] = useState(0)
-  const [documentPerPage, setDocumentPerPage] = useState(10)
+  const [page, setPage] = useState(-1)
+  const [documentPerPage, setDocumentPerPage] = useState(-1)
+  const [refreshId, setRefreshId] = useState(-1)
   
   useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    setPage(parseInt(params.get('page_number') || 0))
-    setDocumentPerPage(parseInt(params.get('document_per_page') || 10))
-  }, [location.search])
+    setPage(parseInt(searchParams.get('page_number') || 0))
+    setDocumentPerPage(parseInt(searchParams.get('document_per_page') || 10))
+    setRefreshId(parseInt(searchParams.get('refresh_id') || 0))
+  }, [searchParams])
 
   useEffect(() => {
-    (async () => {
-      dispatch(
-        tableAction.setTableDocuments(
-          await getTableDocuments(tableName, page, documentPerPage)
-        )
-      )
-    })()
-  }, [page, documentPerPage, dispatch, tableName])
+    if(page === -1 || documentPerPage === -1) return
+    dispatch(
+      fetchTableDocuments(tableName, page, documentPerPage)
+    )
+  }, [page, documentPerPage, dispatch, tableName, refreshId])
 
   const updateQuery = (pageNumber, documentPerPage) => {
-    const params = new URLSearchParams(location.search)
-    if(pageNumber != undefined) params.set('page_number', pageNumber)
-    if(documentPerPage != undefined) documentPerPage && params.set('document_per_page', documentPerPage)
-    navigate(`?${params.toString()}`)
+    const newSearchParams = new URLSearchParams(searchParams.toString())
+    if(pageNumber != undefined) newSearchParams.set('page_number', pageNumber)
+    if(documentPerPage != undefined) newSearchParams.set('document_per_page', documentPerPage)
+    setSearchParams(newSearchParams)
+    // const newSearchParams = new URLSearchParams()
   }
 
   const handleChangePage = (event, newPage) => {

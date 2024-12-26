@@ -1,11 +1,15 @@
 import { Card, CardActionArea, CardContent, IconButton, Typography } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
+import { dropTableRequest } from "../../../../../../../services/requests";
+import { useSnackbar } from "notistack";
 
 export default function TableItem({
-  tableItemName
+  tableName,
+  tableItemName,
+  key
 }) {
-  const { tableName } = useParams()
+  const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
 
   const handleTableItemClicked = () => {
@@ -13,11 +17,18 @@ export default function TableItem({
     return
   }
 
-  
+  const handleDropTable = async () => {
+    try {
+      const result = await dropTableRequest(tableName)
+      enqueueSnackbar(result.message, {variant: 'success'})
+    } catch(error) {
+      enqueueSnackbar(error.message, {variant: 'error'})
+    }
+  }
 
   return (
     <Card
-      // elevation={2}
+      key={key}
       sx={{
         bgcolor: tableName === tableItemName? '#002e73': '#023f9c',
         cursor: 'pointer',
@@ -46,7 +57,11 @@ export default function TableItem({
           >
             {tableItemName}
           </Typography>
-          <IconButton aria-label="delete" size='large'>
+          <IconButton 
+            aria-label="delete" 
+            size='large'
+            onClick={handleDropTable}
+          >
             <Delete sx={{
               color: '#f73444'
             }}/>

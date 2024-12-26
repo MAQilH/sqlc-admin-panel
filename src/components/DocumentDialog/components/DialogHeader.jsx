@@ -26,7 +26,7 @@ export default function DialogHeader({
           <Button autoFocus sx={{
             color: '#fa576a',
             fontWeight: 'bold'
-          }}>
+          }} onClick={onDelete}>
             DELETE
           </Button>
         }

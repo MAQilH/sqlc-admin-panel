@@ -1,7 +1,9 @@
 import { Stack } from "@mui/material";
-import TableItem from "./components/tableItem";
+import TableItem from "./components/TableItem";
+import { useParams } from "react-router";
 
 export default function TableList({tablesName}) {
+  const { tableName } = useParams()
   return (
     <Stack
       sx={{
@@ -11,8 +13,12 @@ export default function TableList({tablesName}) {
       spacing={'3px'}
     >
       {
-        tablesName.map(tableName => {
-          return <TableItem key={tableName} tableItemName={tableName}/>
+        tablesName.map(tableItemName => {
+          return <TableItem 
+            key={tableItemName} 
+            tableItemName={tableItemName} 
+            tableName={tableName}
+          />
         })
       }
     </Stack>

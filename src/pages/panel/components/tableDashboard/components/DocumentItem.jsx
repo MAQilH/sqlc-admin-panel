@@ -1,6 +1,6 @@
 import { Box, Card, CardActionArea, CardContent, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { dialogAction } from "../../../../../../store/dialog/slice";
+import { dialogAction } from "../../../../../store/dialog/slice";
 
 export default function DocumentItem({
   data
@@ -44,7 +44,7 @@ export default function DocumentItem({
                       fontSize: '0.7rem'
                     }}
                   >
-                    {value}
+                    {String(value)}
                   </Typography>
                 </Box>
               )
